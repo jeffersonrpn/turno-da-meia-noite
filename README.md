@@ -9,18 +9,17 @@ Duração: 5–10 minutos por jogador casual (ideal para gamejam)
 Loop Principal: Empurre lápides até suas posições corretas antes da meia-noite.
 
 
-## Como Jogar
+## Status do Desenvolvimento
 
-### Controles
-- **Setas direcionais**: Movimentar o personagem
-  - ⬅️ Esquerda
-  - ➡️ Direita  
-  - ⬆️ Cima
-  - ⬇️ Baixo
-- **❎ (X)**: Confirmar/Avançar nos menus
-
-### Objetivo
-Empurre as lápides para o lugar certo antes do tempo acabar
+Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
+- [ ] Movimentação básica do jogador
+- [ ] Sistema de colisão
+- [ ] Interface de menu
+- [ ] Mapa básico do cemitério
+- [ ] Mecânica de empurrar lápides
+- [ ] Sistema de níveis
+- [ ] Temporizador
+- [ ] Condições de vitória/derrota
 
 ## Tecnologia
 
@@ -48,26 +47,6 @@ ultimoturno/
 3. Execute com `run`
 
 Ou simplesmente abra o arquivo `midnightshift.p8` diretamente no PICO-8.
-
-## Features Implementadas
-
-[x] Sistema de movimentação do jogador com detecção de colisão
-[] Menu principal interativo
-[] Tela de dicas/instruções
-[] Mapa do cemitério com tiles sólidos
-[] Sistema de sprites para personagem e ambiente
-
-## Status do Desenvolvimento
-
-Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
-[x] Movimentação básica do jogador
-[x] Sistema de colisão
-[] Interface de menu
-[x] Mapa básico do cemitério
-[ ] Mecânica de empurrar lápides
-[ ] Sistema de níveis
-[ ] Temporizador
-[ ] Condições de vitória/derrota
 
 ## Contribuindo
 
