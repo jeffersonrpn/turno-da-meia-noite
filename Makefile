@@ -1,16 +1,16 @@
 # Caminhos e nomes
 # ===============================
-PICO8 = pico8
+PICO8_DIR = /home/jeff/pico-8
+PICO8 = $(PICO8_DIR)/pico8
 GAME = midnightshift
 SRC = $(GAME).p8
+PNG_SRC = $(GAME).p8.png
 EXPORT_DIR = export
-HTML_EXPORT = $(EXPORT_DIR)/index.html
+HTML_EXPORT = $(EXPORT_DIR)/$(GAME).html
+JS_EXPORT = $(EXPORT_DIR)/$(GAME).js
 PICO8_CARTS = /home/jeff/.lexaloffle/pico-8/carts
 REPO_DIR = /home/jeff/workspace/ultimoturno
-
-# Caminho absoluto (ajuste com seu usuário)
-PROJECT_DIR = /home/jeff/workspace/$(GAME)
-SRC_PATH = $(PROJECT_DIR)/$(SRC)
+SRC_PATH = $(REPO_DIR)/$(SRC)
 
 # Comandos principais
 # ===============================
@@ -29,6 +29,7 @@ save:
 copy:
 	@echo "Copiando $(SRC) do PICO-8 para o repositório..."
 	cp $(PICO8_CARTS)/$(SRC) $(REPO_DIR)/
+	cp $(PICO8_CARTS)/$(PNG_SRC) $(REPO_DIR)/
 	@echo "Arquivo copiado para $(REPO_DIR)/$(SRC)"
 reversecopy:
 	@echo "Copiando $(SRC) do repositório para o PICO-8..."
@@ -36,19 +37,20 @@ reversecopy:
 	@echo "Arquivo copiado para $(PICO8_CARTS)/$(SRC)"
 
 # Exporta para web (HTML + JS)
-export:
+build:
 	@echo "Exportando versão web..."
 	mkdir -p $(EXPORT_DIR)
-	$(PICO8) -export $(HTML_EXPORT) $(SRC_PATH)
+	$(PICO8) -export $(HTML_EXPORT) $(PNG_SRC)
 	@echo "Arquivos exportados em $(EXPORT_DIR)/"
 
 # Exporta e publica no GitHub Pages
-deploy: export
-	@echo "Publicando no GitHub Pages..."
+NOW = $(shell date +%Y-%m-%d_%H-%M-%S)
+deploy:
+	@echo "Publicando no GitHub Pages $(NOW)..."
 	git checkout -B gh-pages
 	cp -r $(EXPORT_DIR)/* .
-	git add index.html index.js index.data
-	git commit -m "Publicando no GitHub Pages"
+	git add $(HTML_EXPORT) $(JS_EXPORT)
+	git commit -m "Publicando jogo em $(NOW)"
 	git push -f origin gh-pages
 	git checkout main
 	@echo "✨ Jogo publicado em: https://$(shell git config user.name).github.io/$(GAME)/"
