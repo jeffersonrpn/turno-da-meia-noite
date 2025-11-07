@@ -5,6 +5,8 @@ __lua__
 
 function _init()
   t=0
+  dirx={-1,1,0,0}
+  diry={0,0,-1,1}
   _upd=update_game
   _drw=draw_game
   start_game()
@@ -18,41 +20,9 @@ end
 function _draw()
   _drw()
 end
-
 -->8
--- menu principal
+-- game
 
-function update_menu()
-  if btnp(5) then -- x
-    start_transition(1)
-  end
-end
-
-function draw_menu()
-  cls(0)
-  print("ultimo turno", 34, 40, 7)
-  print("pressione ❎ para comecar", 20, 60, 6)
-end
-
--->8
--- tela de dica / preparacao
-
-function update_hint()
-  if btnp(5) then -- x
-    start_transition(2)
-    start_level1()
-  end
-end
-
-function draw_hint()
-  cls(0)
-  print("dica:", 4, 20, 8)
-  print("empurre as lapides para o lugar certo", 4, 40, 7)
-  print("antes do nascer do sol...", 20, 50, 7)
-  print("pressione ❎ para voltar", 28, 80, 6)
-end
-
--->8
 -- player
 
 p = {
@@ -61,63 +31,29 @@ p = {
   y = 0,
   ox = 0,
   oy = 0,
-  tile_size = 8,
-  move_delay = 0.2, -- quanto maior, mais lento
-  move_timer = 0
+  tile_size = 8
 }
 
-function update_player()
-  -- contador de delay para repeticao
-  if p.move_timer > 0 then
-    p.move_timer -= 0.1
-    return
-  end
-
-  local dx, dy = 0, 0
-
-  -- esquerda
-  if btnp(0) then
-    dx = -1
-    p.ox = 8
-    _upd = update_pturn
-  end
-  -- direita
-  if btnp(1) then
-    dx = 1
-    p.ox = -8
-    _upd = update_pturn
-  end
-   -- cima
-  if btnp(2) then
-    dy = -1
-    p.oy = 8
-    _upd = update_pturn
-  end
-  -- baixo
-  if btnp(3) then
-    dy = 1
-    p.oy = -8
-    _upd = update_pturn
-  end
-
-  -- se nenhum direcional foi apertado, sai
-  if dx == 0 and dy == 0 then
-    return
-  end
-
-  -- calcula posicao destino em pixels
-  local nx = p.x + dx * p.tile_size
-  local ny = p.y + dy * p.tile_size
-
-  -- checa colisao usando caixa
-  if not solid_at(nx, ny) then
-    p.x = nx
-    p.y = ny
-  end
-
-  -- aplica delay para evitar movimento continuo muito rapido
-  p.move_timer = p.move_delay
+function start_game()
+  p.x = 8 * p.tile_size
+  p.y = 13 * p.tile_size
 end
+
+function update_game()
+  for i = 0,3 do
+    if btnp(i) then
+      local dx = dirx[i+1] * p.tile_size
+      local dy = diry[i+1] * p.tile_size
+      p.x += dx
+      p.y += dy
+      p.ox = -dx
+      p.oy = -dy
+      _upd = update_pturn
+      return
+    end
+  end
+end
+
 
 function update_pturn()
   if p.ox>0 then
@@ -137,46 +73,10 @@ function update_pturn()
   end
 end
 
-function draw_player()
-  spr(get_frame(p.spr), p.x + p.ox, p.y + p.oy)
-end
-
--- checa se alguma parte da caixa do jogador encosta em tiles solidos
-function solid_at(x, y)
-  local w = 7 -- largura aproximada do sprite do jogador
-  local h = 7 -- altura aproximada
-
-  -- checa os quatro cantos da bounding box
-  return tile_solid(x, y)
-    or tile_solid(x + w, y)
-    or tile_solid(x, y + h)
-    or tile_solid(x + w, y + h)
-end
-
--- checa se um pixel esta dentro de um tile solido
-function tile_solid(px, py)
-  local tile_x = flr(px / 8)
-  local tile_y = flr(py / 8)
-  local tile = mget(tile_x, tile_y)
-  return fget(tile, 0)
-end
-
--->8
--- game
-
-function start_game()
-  p.x = 8 * p.tile_size
-  p.y = 13 * p.tile_size
-end
-
-function update_game()
-  update_player()
-end
-
 function draw_game()
   cls()
   map(0, 0, 0, 0, 16, 16)
-  draw_player()
+  spr(get_frame(p.spr), p.x + p.ox, p.y + p.oy)
 end
 
 -->8
