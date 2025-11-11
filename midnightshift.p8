@@ -2,89 +2,78 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 -- init e update
-
 function _init()
-  t=0
+  t = 0
+  p_ani = {16,17}
+  
   dirx={-1,1,0,0}
   diry={0,0,-1,1}
+  
   _upd=update_game
   _drw=draw_game
-  start_game()
+  startgame()
 end
-
+ 
 function _update()
-  t+=1
+  t += 1
   _upd()
 end
-
+ 
 function _draw()
-  _drw()
+ _drw()
+end
+ 
+function startgame()
+ p_x = 8
+ p_y = 13
+ p_ox = 0
+ p_oy = 0
+ p_sox = 0
+ p_soy = 0
 end
 -->8
 -- game
-
--- player
-
-p = {
-  spr = {16,17},
-  x = 0,
-  y = 0,
-  ox = 0,
-  oy = 0,
-  tile_size = 8
-}
-
-function start_game()
-  p.x = 8 * p.tile_size
-  p.y = 13 * p.tile_size
-end
-
 function update_game()
-  for i = 0,3 do
+  for i=0,3 do
     if btnp(i) then
-      local dx = dirx[i+1] * p.tile_size
-      local dy = diry[i+1] * p.tile_size
-      p.x += dx
-      p.y += dy
-      p.ox = -dx
-      p.oy = -dy
-      _upd = update_pturn
-      return
-    end
+    local dx,dy=dirx[i+1],diry[i+1]
+    p_x+=dx
+    p_y+=dy
+    p_sox,p_soy=-dx*8,-dy*8
+    p_ox,p_oy=p_sox,p_soy
+    p_t=0
+    _upd=update_pturn
+   return
   end
+ end
 end
-
 
 function update_pturn()
-  if p.ox>0 then
-    p.ox-=1
-  end
-  if p.ox<0 then
-    p.ox+=1
-  end
-  if p.oy>0 then
-    p.oy-=1
-  end
-  if p.oy<0 then
-    p.oy+=1
-  end
-  if p.ox==0 and p.oy==0 then
-    _upd=update_game
+  p_t = min(p_t+0.125, 1)
+ 
+  p_ox = p_sox * (1-p_t)
+  p_oy = p_soy * (1-p_t)
+ 
+  if p_t==1 then
+   _upd = update_game
   end
 end
-
+ 
 function draw_game()
-  cls()
-  map(0, 0, 0, 0, 16, 16)
-  spr(get_frame(p.spr), p.x + p.ox, p.y + p.oy)
+  cls(0)
+  map()
+  draw_spr(get_frame(p_ani), p_x * 8 + p_ox, p_y * 8 + p_oy)
 end
-
 -->8
 -- auxiliares
-
 function get_frame(ani)
-  return ani[flr(t/8)%#ani+1]
+  return ani[flr(t/8) % #ani+1]
 end
+
+function draw_spr(_spr,_x,_y)
+  spr(_spr, _x, _y)
+end
+
 __gfx__
 0000000033333333dddddddd00555500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000033333333d555555d05666650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
