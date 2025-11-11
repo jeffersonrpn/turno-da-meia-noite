@@ -13,10 +13,12 @@ Loop Principal: Empurre lápides até suas posições corretas antes da meia-noi
 
 Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
 - [x] Movimentação básica do jogador
-- [ ] Sistema de colisão
+- [x] Sistema de colisão
 - [ ] Interface de menu
 - [ ] Mapa básico do cemitério
-- [ ] Mecânica de empurrar lápides
+- [x] Mecânica de empurrar lápides
+- [ ] Mecânica de validar local das lápides
+- [ ] Mecânica de fantasmas surgirem e atrapalharem o personagem
 - [ ] Sistema de níveis
 - [ ] Temporizador
 - [ ] Condições de vitória/derrota
