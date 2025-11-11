@@ -12,7 +12,7 @@ Loop Principal: Empurre lápides até suas posições corretas antes da meia-noi
 ## Status do Desenvolvimento
 
 Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
-- [ ] Movimentação básica do jogador
+- [x] Movimentação básica do jogador
 - [ ] Sistema de colisão
 - [ ] Interface de menu
 - [ ] Mapa básico do cemitério
@@ -42,9 +42,7 @@ ultimoturno/
 - PICO-8 instalado no sistema
 
 ### Executando o jogo
-1. Abra o PICO-8
-2. Use o comando `load midnightshift.p8`
-3. Execute com `run`
+Use o comando `make run`
 
 Ou simplesmente abra o arquivo `midnightshift.p8` diretamente no PICO-8.
 
