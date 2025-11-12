@@ -61,6 +61,7 @@ levels = {
 }
 
 current_level = 1
+final_level = #levels
 
 function game_init()
   start_game()
@@ -219,7 +220,7 @@ function move_player(dx, dy)
 		  
 		  -- se ha parede ou outra
 		  -- lapide, bump
-		  if fget(mget(push_x, push_y),0) or tomb_at(push_x, push_y) then
+		  if fget(tile_at(push_x, push_y),0) or tomb_at(push_x, push_y) then
 		    start_bump(dx, dy)
 		    return
 		  end
@@ -259,6 +260,7 @@ end
 
 function menu_init()
   set_state(menu_update, menu_draw)
+  current_level = 1
 end
 
 function menu_update()
@@ -325,7 +327,11 @@ end
 
 function next_level()
   current_level = (current_level or 1) + 1
-  dica_init()
+  if current_level > final_level then
+    gameover_init()
+  else
+    dica_init()
+  end
 end
 
 
@@ -374,12 +380,37 @@ function complete_draw()
   end
   draw_spr(get_frame(p_ani, 8, 0), p_x * 8 + p_ox, p_y * 8 + p_oy, p_flip)
   
+  draw_hud()
+  
   -- mensagem central
   local msg = "antes do amanhecer..."
   print(msg, 64 - #msg * 2, 60, 7)
   print("pressione x para continuar", 64 - 10 * 2, 80, 6)
 end
 
+-->8
+-- game over
+
+function gameover_init()
+  gameover_timer = 0
+  set_state(gameover_update, gameover_draw)
+end
+
+function gameover_update()
+  gameover_timer += 1
+  
+  if btnp(5) or gameover_timer > 180 then
+    menu_init()
+  end
+end
+
+function gameover_draw()
+  cls(0)
+ 
+  print("parabens!", 48, 48, 7)
+  print("voce completou todas as fases!", 8, 64, 6)
+  print("pressione x para voltar ao menu", 16, 90, 13)
+end
 __gfx__
 000000001111111155555555111111111111111111111111111111110dddddddddddddddddddddd0111111111111111111111111111111111111111111000011
 000000001111111155555555111111d11111111111666111111111110d66666666666666666666d0111111111111111111111111111111111100001110666601
