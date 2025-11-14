@@ -70,7 +70,7 @@ levels = {
   {
     map_x = 0,
     map_y = 0,
-    time = 5,
+    time = 30,
     ghosts = 2,
     tombs = {
       {3, 5, 18, 5},
@@ -189,9 +189,11 @@ end
 
 function update_freeze()
   if p_frozen then
+    p_ani={16}
     freeze_timer -= 1
     if freeze_timer <= 0 then
       p_frozen = false
+      p_ani={16,17}
     end
   end
 end
@@ -229,7 +231,20 @@ function draw_game()
     spr(tomb.s, tomb.x * 8 + tomb.ox, tomb.y * 8 + tomb.oy)
   end
   -- jogador
-  draw_spr(get_frame(p_ani, 8, 0), p_x * 8 + p_ox, p_y * 8 + p_oy, p_flip)
+  local shake_x = 0
+  if p_frozen then
+    if t % 8 == 1 then
+      shake_x = 1
+    else
+      shake_x = -1
+    end
+    if t % 8 < 4 then
+      pal(1, 3) 
+      pal(2, 14)
+    end
+  end
+  draw_spr(get_frame(p_ani, 8, 0), p_x * 8 + p_ox + shake_x, p_y * 8 + p_oy, p_flip)
+  pal()
   -- fantasmas
   for g in all(ghosts) do
     draw_spr(get_frame(ghost_ani, 8, 0), g.x, g.y)
