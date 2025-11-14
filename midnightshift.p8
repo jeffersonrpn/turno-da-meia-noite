@@ -437,18 +437,44 @@ end
 
 
 -->8
--- menu
+-- tela de titulo
 
 function menu_init()
+  credits_t = 0
   menu_t = 0
   menu_starting = false
   menu_deplay = 80
   menu_blink_t = 0
+  fade_table = {0,1,1,5,5,5,5,13,13,13,6,6,6,7}
+  
   
   moon_init()
   stars_init()
   
-  set_state(menu_update, menu_draw)
+  set_state(inicio_update, inicio_draw)
+end
+
+function inicio_update()
+  credits_t += 1
+  if credits_t > 140 then
+    set_state(menu_update, menu_draw)
+  end
+end
+
+function inicio_draw()
+  cls()
+  local idx
+  if credits_t <= 100 then
+    idx = flr(credits_t) + 1
+  else
+    local rev_t = credits_t - 100
+    idx = 14 - flr(rev_t)
+  end
+  if idx < 0 then idx = 0 end
+  if idx > 14 then idx = 14 end
+  
+  print_center("um jogo de jefferson neves", 64, fade_table[idx])
+  print_center("jeffersonrpn.itch.io", 120, fade_table[idx])   
 end
 
 function menu_update()
