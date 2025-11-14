@@ -4,6 +4,7 @@ __lua__
 -- init e update
 function _init()
   t = 0
+  total_time = 0
   p_ani = {16,17}
   goals_ani = {35,36,37,38,39}
   ghost_ani = {32,33}
@@ -13,7 +14,8 @@ function _init()
   dirx={-1,1,0,0}
   diry={0,0,-1,1}
   
-  menu_init()
+  reset_run()
+  game_init()
 end
  
 function _update()
@@ -45,9 +47,11 @@ function start_game()
   p_soy = 0
   p_flip = false
 	 p_frozen = false
-	 p_lives = 3
  
   p_mov = nil
+  
+  p_next_dx = 0
+  p_next_dy = 0
  
   tombs = {} 
   ghosts = {}
@@ -66,7 +70,7 @@ levels = {
   {
     map_x = 0,
     map_y = 0,
-    time = 30,
+    time = 5,
     ghosts = 2,
     tombs = {
       {3, 5, 18, 5},
@@ -100,32 +104,63 @@ function game_init()
 end
 
 function update_game()
-  if not p_frozen then
-		  for i=0,3 do
-		    if btnp(i) then
-		      move_player(dirx[i+1], diry[i+1])
-		      return
-		    end
-		  end
-		end
+  handle_player_input()
+  
+  -- se houver um movimento buffered, inicie-o
+  if p_next_dx ~= 0 or p_next_dy ~= 0 then
+    local next_dx, next_dy = p_next_dx, p_next_dy
+    p_next_dx = 0 -- limpa o buffer
+    p_next_dy = 0
+    
+    move_player(next_dx, next_dy)
+  end
 end
 
 function update_pturn()
-  p_t = min(p_t+0.125, 1)
- 
-  p_mov()
+  handle_player_input() 
   
+  p_t = min(p_t+0.125, 1)
+  p_mov()
   tomb_mov()
   
   -- fim do movimento
   if p_t == 1 then
-				local prev_upd = _upd
-	   check_goals()
-	   if _upd == prev_upd then
-	     _upd = update_game
-	   end
-	 end
+    local prev_upd = _upd
+    check_goals()
+    
+    -- se o nivel/jogo nao terminou em check_goals
+    if _upd == prev_upd then
+      
+      -- tenta iniciar o proximo
+      -- movimento encadeado (buffered)
+      if p_next_dx ~= 0 or p_next_dy ~= 0 then
+        local next_dx, next_dy = p_next_dx, p_next_dy
+        p_next_dx = 0 -- limpa o buffer
+        p_next_dy = 0
+        
+        -- inicia proxima animacao
+        -- (start_walk/start_bump)
+        move_player(next_dx, next_dy)
+      else
+        -- se nao ha movimento
+        -- retorna ao estado idle
+        _upd = update_game
+      end
+    end
+  end
+end
 
+function handle_player_input()
+  if p_frozen then return end
+  
+  for i=0,3 do
+    if btnp(i) then
+      -- armazena o proximo movimento desejado
+      p_next_dx = dirx[i+1]
+      p_next_dy = diry[i+1]
+      return
+    end
+  end
 end
 
 function update_ghosts()
@@ -584,7 +619,6 @@ end
 
 function inter_update()
   if btnp(4) or btnp(5) then
-    reset_run()
     game_init()
   end
 end
@@ -651,7 +685,6 @@ function reset_run()
   p_lives = 3
   total_time = 0
   current_level = 1
-  game_init()
 end
 
 -->8
@@ -712,7 +745,8 @@ function draw_hud()
   
   -- vidas
   spr(13, xo - 18, 0)
-  print_r(""..p_lives, xo - 3, 1, 6)
+  local lives = p_lives or -1
+  print_r(""..lives, xo - 3, 1, 6)
 end
 -->8
 -- level complete
@@ -1065,7 +1099,7 @@ __map__
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1818181818181818181818181818181800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 3939393939393939451818443939393900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1818191818182918553418541818183600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 180f18183318181865181864182e181800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
