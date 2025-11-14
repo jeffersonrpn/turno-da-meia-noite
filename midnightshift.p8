@@ -46,7 +46,7 @@ function start_game()
   p_sox = 0
   p_soy = 0
   p_flip = false
-	 p_frozen = false
+	p_frozen = false
  
   p_mov = nil
   
@@ -56,8 +56,8 @@ function start_game()
   tombs = {} 
   ghosts = {}
   ghost_spawn_timer = 0
-	 ghost_spawn_interval = 240
-	 freeze_timer = 0
+	ghost_spawn_interval = 240
+	freeze_timer = 0
  
   -- tempo
   level_time = levels[current_level].time * 60 -- converte segundos em frames
@@ -72,8 +72,9 @@ levels = {
     map_y = 0,
     p_x = 8,
     p_y = 11,
-    time = 30,
-    ghosts = 8,
+    time = 10,
+    ghosts = 3,
+    ghosts_int = 160,
     tombs = {
       {7,9,18, 5},
       {7,8,19, 6},
@@ -85,8 +86,9 @@ levels = {
     map_y = 0,
     p_x = 8,
     p_y = 12,
-    time = 30,
-    ghosts = 10,
+    time = 20,
+    ghosts = 6,
+    ghosts_int = 160,
     tombs = {
       {7,10,18, 5},
       {10,13,19, 6},
@@ -99,7 +101,8 @@ levels = {
     p_x = 8,
     p_y = 7,
     time = 30,
-    ghosts = 12,
+    ghosts = 6,
+    ghosts_int = 160,
     tombs = {
       {10,12,18, 5},
       {2,7,19, 6},
@@ -112,7 +115,8 @@ levels = {
     p_x = 8,
     p_y = 2,
     time = 30,
-    ghosts = 12,
+    ghosts = 3,
+    ghosts_int = 80,
     tombs = {
       {10,9,18, 5},
       {3,7,19, 6},
@@ -125,7 +129,8 @@ levels = {
     p_x = 7,
     p_y = 10,
     time = 30,
-    ghosts = 12,
+    ghosts = 6,
+    ghosts_int = 80,
     tombs = {
       {13,12,18, 5},
       {2,12,19, 6},
@@ -205,9 +210,10 @@ end
 
 function update_ghosts()
   ghost_spawn_timer += 1
-  if ghost_spawn_timer > ghost_spawn_interval then
+  local int = levels[current_level].ghosts_int
+  if ghost_spawn_timer > int then
     ghost_spawn_timer = 0
-    spawn_ghost()
+    spawn_ghosts_batch()
   end
 
   for g in all(ghosts) do
@@ -342,6 +348,41 @@ function tomb_at(x, y)
   end
   return nil
 end
+
+function spawn_ghosts_batch()
+  -- numero simultaneo permitido pela fase
+  local maxg = levels[current_level].ghosts
+  -- quantidade aleatoria de fantasmas
+  local n = flr(rnd(maxg)) + 1
+  -- todos os possiveis pontos de spawn
+  local points = {}
+  -- fantasmas surgem nas margens
+  -- limites Y 3..14 e X 3..14
+  for i=3,14 do
+    add(points, {x=-8, y=i*8, dx=1, dy=0})
+    add(points, {x=128, y=i*8, dx=-1, dy=0})
+    add(points, {x=i*8, y=-8, dx=0, dy=1})
+    add(points, {x=i*8, y=128, dx=0, dy=-1})
+  end
+  -- embaralhar a lista para picks aleatorios
+  -- (Fisher-Yates simplificado)
+  for i=#points,2,-1 do
+    local j = flr(rnd(i)) + 1
+    points[i], points[j] = points[j], points[i]
+  end
+
+  -- spawnar fantasmas sem repetir posicoes
+  for i=1,min(n, #points) do
+    local p = points[i]
+    add(ghosts, {
+      x = p.x,
+      y = p.y,
+      dx = p.dx,
+      dy = p.dy
+    })
+  end
+end
+
 
 function tile_at(x, y)
   local lvl = levels[current_level]
@@ -739,7 +780,7 @@ end
 function reset_run()
   p_lives = 3
   total_time = 0
-  current_level = 5
+  current_level = 1
  	final_level = #levels
 end
 
