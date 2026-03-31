@@ -14,14 +14,17 @@ Loop Principal: Empurre lápides até suas posições corretas antes da meia-noi
 Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
 - [x] Movimentação básica do jogador
 - [x] Sistema de colisão
-- [ ] Interface de menu
-- [ ] Mapa básico do cemitério
+- [x] Interface de menu
+- [x] Mapa básico do cemitério
 - [x] Mecânica de empurrar lápides
-- [ ] Mecânica de validar local das lápides
-- [ ] Mecânica de fantasmas surgirem e atrapalharem o personagem
-- [ ] Sistema de níveis
-- [ ] Temporizador
-- [ ] Condições de vitória/derrota
+- [x] Mecânica de validar local das lápides
+- [x] Mecânica de fantasmas surgirem e atrapalharem o personagem
+- [x] Sistema de níveis
+- [x] Temporizador
+- [x] Condições de vitória/derrota
+- [ ] Músicas
+- [ ] Efeitos sonoros
+- [ ] Mecânica de puxar lápides
 
 ## Tecnologia
 
@@ -33,9 +36,10 @@ Este jogo foi desenvolvido usando:
 
 ```
 ultimoturno/
-├── midnightshift.p8    # Arquivo principal do cartucho PICO-8
-├── README.md           # Este arquivo
-└── Makefile            # Comandos de build/execução
+├── midnightshift.p8
+├── midnightshift.p8.png
+├── README.md
+└── Makefile
 ```
 
 ## Como Executar
