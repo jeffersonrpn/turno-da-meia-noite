@@ -22,7 +22,7 @@ Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
 - [x] Sistema de níveis
 - [x] Temporizador
 - [x] Condições de vitória/derrota
-- [ ] Músicas
+- [x] Músicas
 - [ ] Efeitos sonoros
 - [ ] Mecânica de puxar lápides
 
