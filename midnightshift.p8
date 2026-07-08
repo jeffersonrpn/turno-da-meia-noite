@@ -560,6 +560,7 @@ end
 -- tela de titulo
 
 function menu_init()
+  music(-1)
   credits_t = 0
   menu_t = 0
   menu_option = 1
@@ -574,8 +575,21 @@ function menu_init()
   set_state(inicio_update, inicio_draw)
 end
 
+function menu_resume()
+  menu_t = 0
+  menu_option = 1
+  menu_starting = false
+  menu_blink_t = 0
+
+  moon_init()
+  stars_init()
+
+  music(33)
+
+  set_state(menu_update, menu_draw)
+end
+
 function inicio_update()
-  music(-1)
   credits_t += 1
   if credits_t > 140 then
     music(33)
@@ -682,13 +696,13 @@ function draw_menu_option(text,y,selected)
 
     draw_spr(
       spr,
-      x-10,
+      x-12,
       y-1+yo,
       false
     )
     draw_spr(
       spr,
-      x+#text*4+2,
+      x+#text*4+3,
       y-1+yo,
       true
     )
@@ -733,7 +747,7 @@ function stars_init()
   for i= 1, 20 do
     add(stars, {
       x = rnd(128),
-      y = rnd(85),
+      y = rnd(75),
       c = 7
     })
   end
@@ -756,18 +770,54 @@ function stars_draw()
 end
 -->8
 -- creditos
+anim_time = 18
+anim_delay = 5
 function credits_init()
+  credits_t = 0
   set_state(credits_update,credits_draw)
 end
 
 function credits_update()
-  if btnp(4) or btnp(5) then
-    menu_init()
+  credits_t += 1
+  if credits_t >= anim_delay*6 + anim_time then
+    if btnp(4) or btnp(5) then
+      menu_resume()
+    end
   end
 end
 
 function credits_draw()
-  cls(7)
+  cls(0)
+  draw_frame(1, 1, 14, 14, 1, 10)
+  print_center("game designer.programador", anim_y(25,0), anim_color(0,7))
+  print_center("jefferson neves", anim_y(35,0), anim_color(0,13))
+  print_center("arte de capa", anim_y(55,anim_delay*1), anim_color(anim_delay*1,7))
+  print_center("emanuelly assueria", anim_y(65,anim_delay*1), anim_color(anim_delay*1,13))
+  print_center("musica", anim_y(85,anim_delay*2), anim_color(anim_delay*2,7))
+  print_center("robbyduguay", anim_y(95,anim_delay*2), anim_color(anim_delay*2,13))
+
+  if credits_t >= anim_delay*6 + anim_time then
+    print("❎/🅾️ voltar", 70, 112, 7)
+  end
+end
+
+function anim_y(target_y,start_frame)
+  local d = mid((credits_t-start_frame)/anim_time,0,1)
+  return target_y+10*(1-d)
+end
+
+function anim_color(start_frame, final_color)
+  local d = mid((credits_t-start_frame)/anim_time,0,1)
+
+  if d < .25 then
+    return 0       -- mesma cor do fundo
+  elseif d < .5 then
+    return 5       -- cinza escuro
+  elseif d < .75 then
+    return 6       -- cinza claro
+  else
+    return final_color
+  end
 end
 -->8
 -- pre jogo (dicas)
