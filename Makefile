@@ -5,9 +5,14 @@ PICO8 = $(PICO8_DIR)/pico8
 GAME = midnightshift
 SRC = $(GAME).p8
 PNG_SRC = $(GAME).p8.png
-EXPORT_DIR = export
-HTML_EXPORT = $(EXPORT_DIR)/$(GAME).html
-JS_EXPORT = $(EXPORT_DIR)/$(GAME).js
+
+HTML = index.html
+JS = index.js
+
+ITCH_USER = jeffersonrpn
+ITCH_GAME = turno-da-meia-noite
+ITCH_CHANNEL = html5
+
 PICO8_CARTS = /home/jeff/.lexaloffle/pico-8/carts
 REPO_DIR = /home/jeff/workspace/ultimoturno
 SRC_PATH = $(REPO_DIR)/$(SRC)
@@ -38,25 +43,21 @@ reversecopy:
 
 # Exporta para web (HTML + JS)
 build:
-	@echo "Exportando versão web..."
-	mkdir -p $(EXPORT_DIR)
-	$(PICO8) -export $(HTML_EXPORT) $(PNG_SRC)
-	@echo "Arquivos exportados em $(EXPORT_DIR)/"
+	@echo "Gerando cartucho..."
+	$(PICO8) -export $(PNG) $(SRC)
 
-# Exporta e publica no GitHub Pages
-NOW = $(shell date +%Y-%m-%d_%H-%M-%S)
-deploy:
-	@echo "Publicando no GitHub Pages $(NOW)..."
-	git checkout -B gh-pages
-	cp -r $(EXPORT_DIR)/* .
-	git add $(HTML_EXPORT) $(JS_EXPORT)
-	git commit -m "Publicando jogo em $(NOW)"
-	git push -f origin gh-pages
-	git checkout main
-	@echo "✨ Jogo publicado em: https://$(shell git config user.name).github.io/$(GAME)/"
+	@echo "Gerando HTML..."
+	$(PICO8) -export $(HTML) $(SRC)
+
+	@echo "✔ Build concluído."
 
 # Limpa exportações antigas
 clean:
-	@echo "Limpando exportações..."
-	rm -rf $(EXPORT_DIR)
-	rm -f index.html index.js index.data
+	@echo "Limpando arquivos gerados..."
+	rm -f $(PNG)
+	rm -f $(HTML)
+	rm -f $(JS)
+
+publish: build
+	@echo "Publicando no itch.io..."
+	butler push . $(ITCH_USER)/$(ITCH_GAME):$(ITCH_CHANNEL)
