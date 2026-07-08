@@ -22,6 +22,9 @@ Este projeto está em desenvolvimento ativo. Funcionalidades implementadas:
 - [x] Sistema de níveis
 - [x] Temporizador
 - [x] Condições de vitória/derrota
+- [x] Músicas
+- [ ] Efeitos sonoros
+- [ ] Mecânica de puxar lápides
 
 ## Tecnologia
 
@@ -33,9 +36,10 @@ Este jogo foi desenvolvido usando:
 
 ```
 ultimoturno/
-├── midnightshift.p8    # Arquivo principal do cartucho PICO-8
-├── README.md           # Este arquivo
-└── Makefile            # Comandos de build/execução
+├── midnightshift.p8
+├── midnightshift.p8.png
+├── README.md
+└── Makefile
 ```
 
 ## Como Executar
